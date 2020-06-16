@@ -65,7 +65,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Characters\Character.cs" />
+    <Compile Include="Characters\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripts\DungeonMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
