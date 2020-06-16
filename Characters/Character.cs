@@ -6,28 +6,54 @@ public class Character : Node2D
 {
     public Dictionary<Vector2, RayCast2D> RayCastDirections = new Dictionary<Vector2, RayCast2D>();
     public AnimatedSprite AnimatedSprite;
+    public Tween Tween;
+    private float _tweenLength = 0.1f;
     
     protected TileMap Map;
 
     protected Vector2 MapPosition
     {
         get => Map.WorldToMap(Position);
-        set => Position = Map.MapToWorld(value);
+        set => SetWorldPosition(value, false);
     }
-    
+
+    public void SetWorldPosition(Vector2 value, bool doTween)
+    {
+        var oldPos = Position;
+        var newPos = Map.MapToWorld(value);
+
+        if (doTween)
+        {
+            Tween.InterpolateProperty(this, "Position", oldPos, newPos, _tweenLength);
+            Tween.Start();
+        }
+
+        Position = newPos;
+    }
+
     public override void _Ready()
     {
         AnimatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
         AnimatedSprite.Play();
         Map = GetParent<TileMap>();
+        Tween = GetNode<Tween>("Tween");
         GetRaycastDirections();
     }
 
     public bool MoveBy(Vector2 movement)
     {
-        if (RayCastDirections[movement].IsColliding()) return false;
+        if (RayCastDirections[movement].IsColliding())
+        {
+            // bump into a wall
+            var curPos = Position;
+            var newPos = Position + movement * (Map.CellSize / 2);
+            Tween.InterpolateProperty(this, "Position", curPos, newPos, _tweenLength/2);
+            Tween.InterpolateProperty(this, "Position", newPos, curPos, _tweenLength/2);
+            Tween.Start();
+            return false;
+        }
 
-        MapPosition += movement;
+        SetWorldPosition(MapPosition + movement, true);
         return true;
     }
 

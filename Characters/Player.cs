@@ -7,7 +7,7 @@ namespace SlashRoguelikedevTutorial2020.Characters
     {
         public override void _Input(InputEvent @event)
         {
-            if (!(@event is InputEventKey)) return;
+            if (!(@event is InputEventKey) || Tween.IsActive()) return;
             
             Vector2 movement;
             movement.x = Convert.ToInt32(Input.IsActionPressed("MoveEast")) -
