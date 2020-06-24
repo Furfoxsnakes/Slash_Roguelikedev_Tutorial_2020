@@ -7,11 +7,23 @@ public class Character : Node2D
     public Dictionary<Vector2, RayCast2D> RayCastDirections = new Dictionary<Vector2, RayCast2D>();
     public AnimatedSprite AnimatedSprite;
     public Tween Tween;
+
+    public List<Vector2>Path
+    {
+        get => _path;
+        set
+        {
+            _path = value;
+            if (value.Count == 0) return;
+            SetProcess(true);
+        }
+    }
+    private List<Vector2> _path;
     private float _tweenLength = 0.1f;
     
-    protected TileMap Map;
+    protected DungeonMap Map;
 
-    protected Vector2 MapPosition
+    public Vector2 MapPosition
     {
         get => Map.WorldToMap(Position);
         set => SetWorldPosition(value, false);
@@ -35,9 +47,16 @@ public class Character : Node2D
     {
         AnimatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
         AnimatedSprite.Play();
-        Map = GetParent<TileMap>();
+        Map = Owner.GetNode<DungeonMap>("Nav/TempMap");
         Tween = GetNode<Tween>("Tween");
         GetRaycastDirections();
+        SetProcess(false);
+    }
+
+    public override void _Process(float delta)
+    {
+        var moveDistance = 400 * delta;
+        MoveAlongPath(moveDistance);
     }
 
     public bool MoveBy(Vector2 movement)
@@ -55,6 +74,30 @@ public class Character : Node2D
 
         SetWorldPosition(MapPosition + movement, true);
         return true;
+    }
+
+    public void MoveAlongPath(float distance)
+    {
+        var startPoint = Position;
+        for (int i = 0; i < _path.Count; i++)
+        {
+            var distanceToNext = startPoint.DistanceTo(_path[0]);
+            if (distance <= distanceToNext && distance >= 0)
+            {
+                Position = startPoint.LinearInterpolate(_path[0], distance / distanceToNext);
+                break;
+            }
+
+            if (distance < 0)
+            {
+                Position = _path[0];
+                SetProcess(false);
+                break;
+            }
+            distance -= distanceToNext;
+            startPoint = _path[0];
+            _path.RemoveAt(0);
+        }
     }
 
     private void GetRaycastDirections()
