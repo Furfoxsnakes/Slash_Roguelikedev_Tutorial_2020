@@ -10,6 +10,8 @@ public class Character : Node2D, IGameObject
     public Tween Tween;
     private float _tweenLength = 0.1f;
 
+    public int FOVRadius = 3;
+
     protected DungeonMap Map;
     // protected DungeonMap Map => GameController.Instance.DungeonMap;
     private IGameObject _gameObjectImplementation;
@@ -20,6 +22,15 @@ public class Character : Node2D, IGameObject
         AnimatedSprite.Play();
         Map = GetTree().Root.GetNode<DungeonMap>("Game/Nav/TempMap");
         Tween = GetNode<Tween>("Tween");
+    }
+
+    public override void _Process(float delta)
+    {
+        // this doesn't seem very well optimized
+        if (Map.FOV[Position] > 0)
+            AnimatedSprite.Show();
+        else
+            AnimatedSprite.Hide();
     }
 
     public Character()
