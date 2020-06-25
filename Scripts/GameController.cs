@@ -2,23 +2,29 @@ using Godot;
 using System;
 using System.Linq;
 using SlashRoguelikedevTutorial2020.Characters;
+using SlashRoguelikedevTutorial2020.Scripts;
 
 public class GameController : Node
 {
     public static GameController Instance => _instance;
-    private static GameController _instance = new GameController();
+    private static GameController _instance;
 
-    public TileMap TileMap;
+    public Node Globals;
+    
+    public DungeonMap DungeonMap;
     public Navigation2D Nav;
     public Line2D Line;
     public Player Player;
 
+    public override void _EnterTree()
+    {
+        _instance = new GameController();
+    }
+
     public override void _Ready()
     {
-        TileMap = GetNode<TileMap>("Nav/TempMap");
-        Nav = GetNode<Navigation2D>("Nav");
-        Line = GetNode<Line2D>("Line2D");
-        Player = GetNode<Player>("Player");
+        DungeonMap = GetNode<DungeonMap>("Nav/TempMap");
+        DungeonMap.GenerateMap();
     }
 
     public override void _UnhandledInput(InputEvent @event)

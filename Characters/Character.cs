@@ -1,114 +1,90 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using GoRogue;
+using GoRogue.GameFramework;
 
-public class Character : Node2D
+public class Character : Node2D, IGameObject
 {
-    public Dictionary<Vector2, RayCast2D> RayCastDirections = new Dictionary<Vector2, RayCast2D>();
     public AnimatedSprite AnimatedSprite;
     public Tween Tween;
-
-    public List<Vector2>Path
-    {
-        get => _path;
-        set
-        {
-            _path = value;
-            if (value.Count == 0) return;
-            SetProcess(true);
-        }
-    }
-    private List<Vector2> _path;
     private float _tweenLength = 0.1f;
-    
+
     protected DungeonMap Map;
-
-    public Vector2 MapPosition
-    {
-        get => Map.WorldToMap(Position);
-        set => SetWorldPosition(value, false);
-    }
-
-    public void SetWorldPosition(Vector2 value, bool doTween)
-    {
-        var oldPos = Position;
-        var newPos = Map.MapToWorld(value);
-
-        if (doTween)
-        {
-            Tween.InterpolateProperty(this, "Position", oldPos, newPos, _tweenLength);
-            Tween.Start();
-        }
-
-        Position = newPos;
-    }
+    // protected DungeonMap Map => GameController.Instance.DungeonMap;
+    private IGameObject _gameObjectImplementation;
 
     public override void _Ready()
     {
         AnimatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
         AnimatedSprite.Play();
-        Map = Owner.GetNode<DungeonMap>("Nav/TempMap");
+        Map = GetTree().Root.GetNode<DungeonMap>("Game/Nav/TempMap");
         Tween = GetNode<Tween>("Tween");
-        GetRaycastDirections();
-        SetProcess(false);
     }
 
-    public override void _Process(float delta)
+    public Character()
     {
-        var moveDistance = 400 * delta;
-        MoveAlongPath(moveDistance);
+        _gameObjectImplementation = new GameObject(Coord.NONE, 1, this, false, false, false);
     }
 
-    public bool MoveBy(Vector2 movement)
+    #region IGameObject
+
+    public uint ID => _gameObjectImplementation.ID;
+
+    public int Layer => _gameObjectImplementation.Layer;
+
+    public void AddComponent(object component) => _gameObjectImplementation.AddComponent(component);
+
+    public T GetComponent<T>() => _gameObjectImplementation.GetComponent<T>();
+
+    public IEnumerable<T> GetComponents<T>() => _gameObjectImplementation.GetComponents<T>();
+
+    public bool HasComponent(Type componentType) => _gameObjectImplementation.HasComponent(componentType);
+
+    public bool HasComponent<T>() => _gameObjectImplementation.HasComponent<T>();
+
+    public bool HasComponents(params Type[] componentTypes) => _gameObjectImplementation.HasComponents(componentTypes);
+
+    public void RemoveComponent(object component) => _gameObjectImplementation.RemoveComponent(component);
+
+    public void RemoveComponents(params object[] components) => _gameObjectImplementation.RemoveComponents(components);
+
+    public bool MoveIn(Direction direction) => _gameObjectImplementation.MoveIn(direction);
+
+    public void OnMapChanged(Map newMap) => _gameObjectImplementation.OnMapChanged(newMap);
+
+    public Map CurrentMap => _gameObjectImplementation.CurrentMap;
+
+    public bool IsStatic => _gameObjectImplementation.IsStatic;
+
+    public bool IsTransparent
     {
-        if (RayCastDirections[movement].IsColliding())
+        get => _gameObjectImplementation.IsTransparent;
+        set => _gameObjectImplementation.IsTransparent = value;
+    }
+
+    public bool IsWalkable
+    {
+        get => _gameObjectImplementation.IsWalkable;
+        set => _gameObjectImplementation.IsWalkable = value;
+    }
+
+    public new Coord Position
+    {
+        get => _gameObjectImplementation.Position;
+        set
         {
-            // bump into a wall
-            var curPos = Position;
-            var newPos = Position + movement * (Map.CellSize / 2);
-            Tween.InterpolateProperty(this, "Position", curPos, newPos, _tweenLength/2);
-            Tween.InterpolateProperty(this, "Position", newPos, curPos, _tweenLength/2);
-            Tween.Start();
-            return false;
-        }
-
-        SetWorldPosition(MapPosition + movement, true);
-        return true;
-    }
-
-    public void MoveAlongPath(float distance)
-    {
-        var startPoint = Position;
-        for (int i = 0; i < _path.Count; i++)
-        {
-            var distanceToNext = startPoint.DistanceTo(_path[0]);
-            if (distance <= distanceToNext && distance >= 0)
-            {
-                Position = startPoint.LinearInterpolate(_path[0], distance / distanceToNext);
-                break;
-            }
-
-            if (distance < 0)
-            {
-                Position = _path[0];
-                SetProcess(false);
-                break;
-            }
-            distance -= distanceToNext;
-            startPoint = _path[0];
-            _path.RemoveAt(0);
+            _gameObjectImplementation.Position = value;
+            GlobalPosition = Map.MapToWorld(new Vector2(value.X, value.Y));
         }
     }
 
-    private void GetRaycastDirections()
+    public event EventHandler<ItemMovedEventArgs<IGameObject>> Moved
     {
-        RayCastDirections[Vector2.Up] = GetNode<RayCast2D>("Raycasts/RayCastNorth");
-        RayCastDirections[Vector2.Right] = GetNode<RayCast2D>("Raycasts/RayCastEast");
-        RayCastDirections[Vector2.Down] = GetNode<RayCast2D>("Raycasts/RayCastSouth");
-        RayCastDirections[Vector2.Left] = GetNode<RayCast2D>("Raycasts/RayCastWest");
-        RayCastDirections[new Vector2(1, -1)] = GetNode<RayCast2D>("Raycasts/RayCastNorthEast");
-        RayCastDirections[new Vector2(1, 1)] = GetNode<RayCast2D>("Raycasts/RayCastSouthEast");
-        RayCastDirections[new Vector2(-1, 1)] = GetNode<RayCast2D>("Raycasts/RayCastSouthWest");
-        RayCastDirections[new Vector2(-1, -1)] = GetNode<RayCast2D>("Raycasts/RayCastNorthWest");
+        add => _gameObjectImplementation.Moved += value;
+        remove => _gameObjectImplementation.Moved -= value;
     }
+
+    #endregion
+    
 }

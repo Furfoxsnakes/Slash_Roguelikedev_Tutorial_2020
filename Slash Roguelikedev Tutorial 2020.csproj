@@ -71,6 +71,7 @@
     <Compile Include="Scripts\DungeonMap.cs" />
     <Compile Include="Scripts\GameController.cs" />
     <Compile Include="Scripts\GameTile.cs" />
+    <Compile Include="Scripts\Globals.cs" />
     <Compile Include="Scripts\Terrain.cs" />
   </ItemGroup>
   <ItemGroup>

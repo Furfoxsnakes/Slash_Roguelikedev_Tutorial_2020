@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://DungeonTileset.tres" type="TileSet" id=1]
-[ext_resource path="res://Characters/Player/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Scripts/GameController.cs" type="Script" id=3]
 [ext_resource path="res://Scripts/DungeonMap.cs" type="Script" id=4]
 
@@ -16,14 +15,3 @@ cell_size = Vector2( 48, 48 )
 cell_y_sort = true
 format = 1
 script = ExtResource( 4 )
-
-[node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 48, 48 )
-
-[node name="Line2D" type="Line2D" parent="."]
-position = Vector2( 24, 24 )
-width = 5.0
-joint_mode = 1
-begin_cap_mode = 1
-end_cap_mode = 2
-antialiased = true
