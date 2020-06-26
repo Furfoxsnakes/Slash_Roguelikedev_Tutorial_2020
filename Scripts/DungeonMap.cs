@@ -13,18 +13,6 @@ public class DungeonMap : TileMap
 
     public IReadOnlyFOV FOV => _map.FOV;
 
-    private void OnObjectAdded(object sender, ItemEventArgs<IGameObject> e)
-    {
-        // if (e.Item.Layer != 0) return;
-        //
-        // var vectorPos = new Vector2(e.Position.X, e.Position.Y);
-        //
-        // if (e.Item.IsWalkable) // floor
-        //     SetCellv(vectorPos, 1);
-        // else
-        //     SetCellv(vectorPos, 0);
-    }
-
     public override void _Ready()
     {
         _fog = GetNode<TileMap>("Fog");
@@ -36,7 +24,6 @@ public class DungeonMap : TileMap
         QuickGenerators.GenerateRectangleMap(tempMap);
         _map = new Map(50, 50, 1, Distance.CHEBYSHEV);
         
-        _map.ObjectAdded += OnObjectAdded;
         _map.ObjectMoved += OnObjectMoved;
 
         foreach (var position in tempMap.Positions())
@@ -73,8 +60,11 @@ public class DungeonMap : TileMap
 
     private void OnObjectMoved(object sender, ItemMovedEventArgs<IGameObject> e)
     {
-        if (e.Item is Character character)
-            character.GlobalPosition = MapToWorld(new Vector2(e.NewPosition.X, e.NewPosition.Y));
+        if (!(e.Item is Character character)) return;
+        
+        var fromPos = MapToWorld(new Vector2(e.OldPosition.X, e.OldPosition.Y));
+        var toPos = MapToWorld(new Vector2(e.NewPosition.X, e.NewPosition.Y));
+        character.TweenToPosition(fromPos, toPos);
     }
 
     public void Draw()
@@ -103,5 +93,10 @@ public class DungeonMap : TileMap
     public void AddCharacter(Character character)
     {
         _map.AddEntity(character);
+    }
+
+    public IGameObject GetObjectAtPos(Coord pos)
+    {
+        return _map.GetObject(pos);
     }
 }

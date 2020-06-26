@@ -35,5 +35,9 @@ script = ExtResource( 2 )
 frames = SubResource( 5 )
 
 [node name="Camera" type="Camera2D" parent="." index="2"]
+current = true
+drag_margin_h_enabled = true
+drag_margin_v_enabled = true
+smoothing_enabled = true
 offset_h = 0.25
 offset_v = 0.25

@@ -24,6 +24,21 @@ public class Character : Node2D, IGameObject
         Tween = GetNode<Tween>("Tween");
     }
 
+    public void TweenToPosition(Vector2 from, Vector2 to)
+    {
+        Tween.InterpolateProperty(this, "GlobalPosition", from, to, _tweenLength);
+        Tween.Start();
+    }
+
+    public void BumpObject(IGameObject gameObject)
+    {
+        var objectWorldPos = Map.MapToWorld(new Vector2(gameObject.Position.X, gameObject.Position.Y));
+        var startingPos = GlobalPosition;
+        Tween.InterpolateProperty(this, "GlobalPosition", startingPos, objectWorldPos, _tweenLength);
+        Tween.InterpolateProperty(this, "GlobalPosition", objectWorldPos, startingPos, _tweenLength);
+        Tween.Start();
+    }
+
     public override void _Process(float delta)
     {
         // this doesn't seem very well optimized
