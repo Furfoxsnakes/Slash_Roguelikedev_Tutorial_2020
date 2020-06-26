@@ -30,15 +30,16 @@ public class DungeonMap : TileMap
 
         foreach (var position in tempMap.Positions())
         {
-            _map.SetTerrain(tempMap[position]
-                ? new Terrain(position, true, true)        // floor
-                : new Terrain(position, false, false));    // wall
+            if (tempMap[position])
+                _map.SetTerrain(new FloorTerrain(position));
+            else
+                _map.SetTerrain(new WallTerrain(position));
         }
 
         // instance a player
         var playerInstance = GD.Load<PackedScene>("res://Characters/Player/Player.tscn").Instance() as Player;
         GetTree().Root.GetNode("Game").AddChild(playerInstance);
-        playerInstance.Position = _map.RandomPosition();
+        playerInstance.Position = _map.WalkabilityView.RandomPosition(true);
         playerInstance.Moved += OnPlayerMoved;
         GameController.Instance.Player = playerInstance;
         AddCharacter(playerInstance);
@@ -48,7 +49,7 @@ public class DungeonMap : TileMap
         {
             var skeleman = GD.Load<PackedScene>("res://Characters/Monsters/Skeleman.tscn").Instance() as Character;
             GetTree().Root.GetNode("Game").AddChild(skeleman);
-            skeleman.Position = _map.RandomPosition();
+            skeleman.Position = _map.WalkabilityView.RandomPosition(true);
             AddCharacter(skeleman);
         }
         

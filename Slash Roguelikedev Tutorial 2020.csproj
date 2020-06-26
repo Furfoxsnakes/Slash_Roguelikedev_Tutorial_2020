@@ -73,9 +73,11 @@
     <Compile Include="Characters\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\DungeonMap.cs" />
+    <Compile Include="Scripts\FloorTerrain.cs" />
     <Compile Include="Scripts\GameController.cs" />
     <Compile Include="Scripts\Globals.cs" />
     <Compile Include="Scripts\Terrain.cs" />
+    <Compile Include="Scripts\WallTerrain.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
