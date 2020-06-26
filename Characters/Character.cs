@@ -32,7 +32,7 @@ public class Character : Node2D, IGameObject
 
     public void TweenToPosition(Vector2 from, Vector2 to)
     {
-        Tween.InterpolateProperty(this, "GlobalPosition", from, to, _tweenLength);
+        Tween.InterpolateProperty(this, "global_position", from, to, _tweenLength);
         Tween.Start();
     }
 
@@ -40,8 +40,8 @@ public class Character : Node2D, IGameObject
     {
         var objectWorldPos = Map.MapToWorld(new Vector2(gameObject.Position.X, gameObject.Position.Y));
         var startingPos = GlobalPosition;
-        Tween.InterpolateProperty(this, "GlobalPosition", startingPos, objectWorldPos, _tweenLength);
-        Tween.InterpolateProperty(this, "GlobalPosition", objectWorldPos, startingPos, _tweenLength);
+        Tween.InterpolateProperty(this, "global_position", startingPos, objectWorldPos, _tweenLength);
+        Tween.InterpolateProperty(this, "global_position", objectWorldPos, startingPos, _tweenLength);
         Tween.Start();
     }
 
