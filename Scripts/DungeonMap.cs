@@ -10,6 +10,7 @@ public class DungeonMap : TileMap
 {
     private Map _map;
     private TileMap _fog;
+    private int _numMonsters = 20;
 
     public IReadOnlyFOV FOV => _map.FOV;
 
@@ -21,7 +22,8 @@ public class DungeonMap : TileMap
     public void GenerateMap()
     {
         var tempMap = new ArrayMap<bool>(50, 50);
-        QuickGenerators.GenerateRectangleMap(tempMap);
+        //QuickGenerators.GenerateRectangleMap(tempMap);
+        QuickGenerators.GenerateRandomRoomsMap(tempMap, 20, 5, 12);
         _map = new Map(50, 50, 1, Distance.CHEBYSHEV);
         
         _map.ObjectMoved += OnObjectMoved;
@@ -36,19 +38,22 @@ public class DungeonMap : TileMap
         // instance a player
         var playerInstance = GD.Load<PackedScene>("res://Characters/Player/Player.tscn").Instance() as Player;
         GetTree().Root.GetNode("Game").AddChild(playerInstance);
-        playerInstance.Position = new Coord(1, 1);
+        playerInstance.Position = _map.RandomPosition();
         playerInstance.Moved += OnPlayerMoved;
         GameController.Instance.Player = playerInstance;
         AddCharacter(playerInstance);
-
+        
+        // generate monsters
+        for (var i = 0; i < _numMonsters; ++i)
+        {
+            var skeleman = GD.Load<PackedScene>("res://Characters/Monsters/Skeleman.tscn").Instance() as Character;
+            GetTree().Root.GetNode("Game").AddChild(skeleman);
+            skeleman.Position = _map.RandomPosition();
+            AddCharacter(skeleman);
+        }
+        
         _map.CalculateFOV(playerInstance.Position, playerInstance.FOVRadius, Radius.DIAMOND);
         Draw();
-
-        // instance a skeleman
-        var skeleman = GD.Load<PackedScene>("res://Characters/Monsters/Skeleman.tscn").Instance() as Character;
-        GetTree().Root.GetNode("Game").AddChild(skeleman);
-        skeleman.Position = new Coord(2, 2);
-        AddCharacter(skeleman);
     }
 
     private void OnPlayerMoved(object sender, ItemMovedEventArgs<IGameObject> e)
@@ -93,6 +98,12 @@ public class DungeonMap : TileMap
     public void AddCharacter(Character character)
     {
         _map.AddEntity(character);
+    }
+
+    public void RemoveCharacter(Character character)
+    {
+        if (_map.Entities.Contains(character))
+            _map.RemoveEntity(character);
     }
 
     public IGameObject GetObjectAtPos(Coord pos)

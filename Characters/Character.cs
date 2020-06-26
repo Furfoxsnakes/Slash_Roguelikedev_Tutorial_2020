@@ -24,6 +24,12 @@ public class Character : Node2D, IGameObject
         Tween = GetNode<Tween>("Tween");
     }
 
+    public void Kill()
+    {
+        Map.RemoveCharacter(this);
+        QueueFree();
+    }
+
     public void TweenToPosition(Vector2 from, Vector2 to)
     {
         Tween.InterpolateProperty(this, "GlobalPosition", from, to, _tweenLength);

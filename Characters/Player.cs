@@ -40,7 +40,12 @@ namespace SlashRoguelikedevTutorial2020.Characters
 
             if (moveDir != Direction.NONE)
                 if (!MoveIn(moveDir))
+                {
+                    var gameObject = Map.GetObjectAtPos(Position + moveDir);
                     BumpObject(Map.GetObjectAtPos(Position + moveDir));
+                    if (gameObject is Character character)
+                        character.Kill();
+                }
         }
     }
 }
