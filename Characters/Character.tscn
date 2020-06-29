@@ -10,3 +10,7 @@ animation = "idle"
 centered = false
 
 [node name="Tween" type="Tween" parent="."]
+
+[node name="Audio" type="AudioStreamPlayer" parent="."]
+
+[node name="HitAudio" type="AudioStreamPlayer" parent="."]

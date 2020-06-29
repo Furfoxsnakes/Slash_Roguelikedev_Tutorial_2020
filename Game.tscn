@@ -30,6 +30,7 @@ layer = -1
 [node name="Colour" type="ColorRect" parent="BGLayer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
 color = Color( 0, 0, 0, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -49,3 +50,5 @@ z_index = 1
 tile_set = SubResource( 1 )
 cell_size = Vector2( 48, 48 )
 format = 1
+
+[node name="Audio" type="AudioStreamPlayer" parent="."]

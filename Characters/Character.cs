@@ -11,8 +11,11 @@ public class Character : Node2D, IGameObject
     private float _tweenLength = 0.1f;
 
     public int FOVRadius = 3;
+    public AudioStreamPlayer Audio => GameController.Audio;
+    [Export] private AudioStream[] _movementSounds;
+    [Export] private AudioStream _hitSound;
 
-    protected DungeonMap Map;
+    protected DungeonMap Map => GameController.DungeonMap;
     // protected DungeonMap Map => GameController.Instance.DungeonMap;
     private IGameObject _gameObjectImplementation;
 
@@ -20,12 +23,28 @@ public class Character : Node2D, IGameObject
     {
         AnimatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
         AnimatedSprite.Play();
-        Map = GetTree().Root.GetNode<DungeonMap>("Game/Nav/TempMap");
         Tween = GetNode<Tween>("Tween");
+    }
+
+    public void PlayMovementSound()
+    {
+        if (_movementSounds.Length == 0) return;
+        var stream = _movementSounds[(int)GD.RandRange(0, _movementSounds.Length)];
+        Audio.Stream = stream;
+        Audio.Stop();
+        Audio.Play();
     }
 
     public void Kill()
     {
+        if (_hitSound != null)
+        {
+            var audio = GameController.Audio;
+            audio.Stop();
+            audio.Stream = _hitSound;
+            audio.Play();
+        }
+        
         Map.RemoveCharacter(this);
         QueueFree();
     }

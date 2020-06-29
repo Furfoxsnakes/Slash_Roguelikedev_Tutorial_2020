@@ -8,38 +8,44 @@ using SlashRoguelikedevTutorial2020.Scripts;
 
 public class DungeonMap : TileMap
 {
-    private Map _map;
+    public Map Map
+    {
+        get;
+        private set;
+    }
     private TileMap _fog;
     private int _numMonsters = 20;
 
-    public IReadOnlyFOV FOV => _map.FOV;
+    public IReadOnlyFOV FOV => Map.FOV;
 
     public override void _Ready()
     {
         _fog = GetNode<TileMap>("Fog");
     }
 
+    public IGameObject this[Coord pos] => Map.GetObject(pos);
+
     public void GenerateMap()
     {
         var tempMap = new ArrayMap<bool>(50, 50);
         //QuickGenerators.GenerateRectangleMap(tempMap);
         QuickGenerators.GenerateRandomRoomsMap(tempMap, 20, 5, 12);
-        _map = new Map(50, 50, 1, Distance.CHEBYSHEV);
+        Map = new Map(50, 50, 1, Distance.CHEBYSHEV);
         
-        _map.ObjectMoved += OnObjectMoved;
+        Map.ObjectMoved += OnObjectMoved;
 
         foreach (var position in tempMap.Positions())
         {
             if (tempMap[position])
-                _map.SetTerrain(new FloorTerrain(position));
+                Map.SetTerrain(new FloorTerrain(position));
             else
-                _map.SetTerrain(new WallTerrain(position));
+                Map.SetTerrain(new WallTerrain(position));
         }
 
         // instance a player
         var playerInstance = GD.Load<PackedScene>("res://Characters/Player/Player.tscn").Instance() as Player;
         GetTree().Root.GetNode("Game").AddChild(playerInstance);
-        playerInstance.Position = _map.WalkabilityView.RandomPosition(true);
+        playerInstance.Position = Map.WalkabilityView.RandomPosition(true);
         playerInstance.Moved += OnPlayerMoved;
         GameController.Instance.Player = playerInstance;
         AddCharacter(playerInstance);
@@ -49,18 +55,18 @@ public class DungeonMap : TileMap
         {
             var skeleman = GD.Load<PackedScene>("res://Characters/Monsters/Skeleman.tscn").Instance() as Character;
             GetTree().Root.GetNode("Game").AddChild(skeleman);
-            skeleman.Position = _map.WalkabilityView.RandomPosition(true);
+            skeleman.Position = Map.WalkabilityView.RandomPosition(true);
             AddCharacter(skeleman);
         }
         
-        _map.CalculateFOV(playerInstance.Position, playerInstance.FOVRadius, Radius.DIAMOND);
+        Map.CalculateFOV(playerInstance.Position, playerInstance.FOVRadius, Radius.DIAMOND);
         Draw();
     }
 
     private void OnPlayerMoved(object sender, ItemMovedEventArgs<IGameObject> e)
     {
         var player = e.Item as Player;
-        _map.CalculateFOV(e.NewPosition, player.FOVRadius, Radius.DIAMOND);
+        Map.CalculateFOV(e.NewPosition, player.FOVRadius, Radius.DIAMOND);
         Draw();
     }
 
@@ -71,23 +77,24 @@ public class DungeonMap : TileMap
         var fromPos = MapToWorld(new Vector2(e.OldPosition.X, e.OldPosition.Y));
         var toPos = MapToWorld(new Vector2(e.NewPosition.X, e.NewPosition.Y));
         character.TweenToPosition(fromPos, toPos);
+        character.PlayMovementSound();
     }
 
     public void Draw()
     {
-        foreach (var position in _map.Positions())
+        foreach (var position in Map.Positions())
         {
-            if (!_map.Explored[position])
+            if (!Map.Explored[position])
                 continue;
             
             var vectorPos = new Vector2(position.X, position.Y);
 
-            if (_map.FOV[position] == 0)
+            if (Map.FOV[position] == 0)
                 _fog.SetCellv(vectorPos, 0);
             else
                 _fog.SetCellv(vectorPos, -1);
 
-            var terrain = _map.GetTerrain<Terrain>(position);
+            var terrain = Map.GetTerrain<Terrain>(position);
             
             if (terrain.IsWalkable)
                 SetCellv(vectorPos, 1);
@@ -98,17 +105,22 @@ public class DungeonMap : TileMap
 
     public void AddCharacter(Character character)
     {
-        _map.AddEntity(character);
+        Map.AddEntity(character);
     }
 
     public void RemoveCharacter(Character character)
     {
-        if (_map.Entities.Contains(character))
-            _map.RemoveEntity(character);
+        if (Map.Entities.Contains(character))
+            Map.RemoveEntity(character);
     }
 
     public IGameObject GetObjectAtPos(Coord pos)
     {
-        return _map.GetObject(pos);
+        return Map.GetObject(pos);
+    }
+
+    public Character GetCharacterAtPos(Coord pos)
+    {
+        return Map.GetEntity<Character>(pos);
     }
 }
