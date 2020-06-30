@@ -49,4 +49,5 @@ smoothing_enabled = true
 offset_h = 0.25
 offset_v = 0.25
 
-[node name="Line" type="Line2D" parent="." index="5"]
+[node name="HitText" parent="." index="5"]
+visible = false

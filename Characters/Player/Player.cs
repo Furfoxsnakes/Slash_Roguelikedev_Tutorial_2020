@@ -59,7 +59,8 @@ namespace SlashRoguelikedevTutorial2020.Characters
                         var gameObject = Map.GetObjectAtPos(Position + moveDir);
                         BumpObject(Map.GetObjectAtPos(Position + moveDir));
                         if (gameObject is Character character)
-                            character.Kill();
+                            //character.Kill();
+                            character.TakeDamage();
                     }
             }
             // mouse movement
@@ -88,7 +89,8 @@ namespace SlashRoguelikedevTutorial2020.Characters
                     {
                         if (character is Player) return;
                         BumpObject(gameObject);
-                        character.Kill();
+                        //character.Kill();
+                        character.TakeDamage();
                     }
                 }
             }

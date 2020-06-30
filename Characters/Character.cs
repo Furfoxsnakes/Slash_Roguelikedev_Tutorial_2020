@@ -7,7 +7,9 @@ using GoRogue.GameFramework;
 public class Character : Node2D, IGameObject
 {
     public AnimatedSprite AnimatedSprite;
+    public AnimationPlayer Anim;
     public Tween Tween;
+    public Label HitText;
     private float _tweenLength = 0.1f;
 
     public int FOVRadius = 3;
@@ -23,6 +25,8 @@ public class Character : Node2D, IGameObject
     {
         AnimatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
         AnimatedSprite.Play();
+        Anim = GetNode<AnimationPlayer>("Anim");
+        HitText = GetNode<Label>("HitText");
         Tween = GetNode<Tween>("Tween");
     }
 
@@ -37,16 +41,21 @@ public class Character : Node2D, IGameObject
 
     public void Kill()
     {
-        if (_hitSound != null)
-        {
-            var audio = GameController.Audio;
-            audio.Stop();
-            audio.Stream = _hitSound;
-            audio.Play();
-        }
-        
         Map.RemoveCharacter(this);
         QueueFree();
+    }
+
+    public void TakeDamage()
+    {
+        Anim.Stop();
+        Anim.Play("Hit");
+
+        if (_hitSound == null) return;
+        
+        var audio = GameController.Audio;
+        audio.Stop();
+        audio.Stream = _hitSound;
+        audio.Play();
     }
 
     public void TweenToPosition(Vector2 from, Vector2 to)
