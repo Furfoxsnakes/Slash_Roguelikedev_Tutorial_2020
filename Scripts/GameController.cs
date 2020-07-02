@@ -1,10 +1,5 @@
 using Godot;
-using System;
-using System.Linq;
-using GoRogue;
 using SlashRoguelikedevTutorial2020.Characters;
-using SlashRoguelikedevTutorial2020.Scripts;
-using SlashRoguelikedevTutorial2020.Scripts.Extensions;
 
 public class GameController : Node
 {

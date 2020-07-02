@@ -1,9 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://DungeonTileset.tres" type="TileSet" id=1]
 [ext_resource path="res://Assets/Sprites/uf_terrain.png" type="Texture" id=2]
 [ext_resource path="res://Scripts/GameController.cs" type="Script" id=3]
 [ext_resource path="res://Scripts/DungeonMap.cs" type="Script" id=4]
+[ext_resource path="res://Assets/Audio/Dangerous Dungeon LOOP.wav" type="AudioStream" id=6]
+[ext_resource path="res://Scripts/BGMController.cs" type="Script" id=7]
 
 [sub_resource type="TileSet" id=1]
 0/name = "Fog"
@@ -52,3 +54,14 @@ cell_size = Vector2( 48, 48 )
 format = 1
 
 [node name="Audio" type="AudioStreamPlayer" parent="."]
+
+[node name="BGM" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 6 )
+script = ExtResource( 7 )
+MaxVolume = -20.0
+
+[node name="DelayTimer" type="Timer" parent="BGM"]
+
+[node name="FadeTween" type="Tween" parent="BGM"]
+[connection signal="finished" from="BGM" to="BGM" method="_on_BGM_finished"]
+[connection signal="timeout" from="BGM/DelayTimer" to="BGM" method="_on_DelayTimer_timeout"]

@@ -9,5 +9,10 @@ namespace SlashRoguelikedevTutorial2020.Scripts.Extensions
         {
             return new Coord((int)v.x, (int)v.y);
         }
+
+        public static Vector2 ToVector2(this Coord c)
+        {
+            return new Vector2(c.X, c.Y);
+        }
     }
 }

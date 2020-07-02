@@ -14,6 +14,7 @@ public class DungeonMap : TileMap
         private set;
     }
     private TileMap _fog;
+    public TileMap PathingTileMap;
     private int _numMonsters = 20;
 
     public IReadOnlyFOV FOV => Map.FOV;
@@ -21,9 +22,12 @@ public class DungeonMap : TileMap
     public override void _Ready()
     {
         _fog = GetNode<TileMap>("Fog");
+        PathingTileMap = GetNode<TileMap>("Pathing");
     }
 
-    public IGameObject this[Coord pos] => Map.GetObject(pos);
+    public Vector2 this[int x, int y] => MapToWorld(new Vector2(x, y));
+    public Vector2 this[Coord c] => this[c.X, c.Y];
+    public Vector2 this[Vector2 v] => this[(int)v.x, (int)v.y];
 
     public void GenerateMap()
     {
