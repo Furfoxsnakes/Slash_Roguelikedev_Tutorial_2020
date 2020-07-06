@@ -1,5 +1,4 @@
-﻿using Godot;
-using GoRogue;
+﻿using GoRogue;
 using SlashRoguelikedevTutorial2020.Scripts.InputActions;
 using SlashRoguelikedevTutorial2020.Scripts.Interfaces;
 

@@ -4,7 +4,6 @@ using GoRogue;
 using GoRogue.GameFramework;
 using GoRogue.MapGeneration;
 using GoRogue.MapViews;
-using Microsoft.Xna.Framework;
 using SlashRoguelikedevTutorial2020.Characters;
 using SlashRoguelikedevTutorial2020.Scripts;
 using Vector2 = Godot.Vector2;

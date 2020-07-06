@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Godot;
 using GoRogue;
-using Microsoft.Xna.Framework.Input;
 
 namespace SlashRoguelikedevTutorial2020.Scripts.States
 {
@@ -30,8 +29,12 @@ namespace SlashRoguelikedevTutorial2020.Scripts.States
                 Player.InputAction.Run(moveDir);
                 
                 GameController.CommandManager.Run();
-                GameController.StateMachine.ChangeState("EnemyTurn");
             }
+        }
+
+        protected override void OnCommandManagerFinished()
+        {
+            GameController.StateMachine.ChangeState("EnemyTurn");
         }
     }
 }

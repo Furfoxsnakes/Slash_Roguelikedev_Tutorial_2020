@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace SlashRoguelikedevTutorial2020.Scripts
 {
     public class CommandManager
     {
+        public delegate void Finished();
+        public event Finished OnFinished;
+        
         private Queue<Command> _commands;
 
         public CommandManager()
@@ -14,10 +16,12 @@ namespace SlashRoguelikedevTutorial2020.Scripts
 
         public void Run()
         {
-            if (_commands.Count <= 0) return;
+            //if (_commands.Count <= 0) return;
             
             while (_commands.Count > 0)
                 _commands.Dequeue().Execute();
+            
+            OnFinished?.Invoke();
         }
 
         public Command Next()

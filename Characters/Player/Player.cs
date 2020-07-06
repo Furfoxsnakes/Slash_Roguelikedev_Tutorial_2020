@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Godot;
 using GoRogue;
 using SlashRoguelikedevTutorial2020.Scripts;
-using SlashRoguelikedevTutorial2020.Scripts.Extensions;
 using SlashRoguelikedevTutorial2020.Scripts.InputActions;
 
 namespace SlashRoguelikedevTutorial2020.Characters

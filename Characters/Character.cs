@@ -12,7 +12,7 @@ public class Character : Node2D, IGameObject
     public Label HitText;
     private float _tweenLength = 0.1f;
     
-    public int FOVRadius = 3;
+    [Export] public int FOVRadius = 3;
     
     public AudioStreamPlayer Audio => GameController.Audio;
     [Export] private AudioStream[] _movementSounds;

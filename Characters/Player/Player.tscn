@@ -35,6 +35,7 @@ animations = [ {
 
 [node name="Player" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
+FOVRadius = 5
 _movementSounds = [ ExtResource( 4 ), ExtResource( 5 ), ExtResource( 7 ), ExtResource( 6 ) ]
 _hitSound = ExtResource( 8 )
 

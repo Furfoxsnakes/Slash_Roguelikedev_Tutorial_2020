@@ -7,6 +7,9 @@ namespace SlashRoguelikedevTutorial2020.Scripts
         public StateMachine Parent;    // StateMachine should be the parent of each state
         public GameController Game;   // root owner should be gamecontroller node
 
+        [Signal]
+        public delegate void StateFinished();
+
         public override void _Ready()
         {
             Parent = GetParent<StateMachine>();
