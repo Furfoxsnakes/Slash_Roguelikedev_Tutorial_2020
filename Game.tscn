@@ -1,11 +1,14 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://DungeonTileset.tres" type="TileSet" id=1]
 [ext_resource path="res://Assets/Sprites/uf_terrain.png" type="Texture" id=2]
 [ext_resource path="res://Scripts/GameController.cs" type="Script" id=3]
 [ext_resource path="res://Scripts/DungeonMap.cs" type="Script" id=4]
+[ext_resource path="res://Scripts/States/PlayerTurnState.cs" type="Script" id=5]
 [ext_resource path="res://Assets/Audio/Dangerous Dungeon LOOP.wav" type="AudioStream" id=6]
 [ext_resource path="res://Scripts/BGMController.cs" type="Script" id=7]
+[ext_resource path="res://Scripts/StateMachine.cs" type="Script" id=8]
+[ext_resource path="res://Scripts/States/EnemyTurnState.cs" type="Script" id=9]
 
 [sub_resource type="TileSet" id=1]
 0/name = "Fog"
@@ -25,6 +28,15 @@
 
 [node name="Game" type="Node"]
 script = ExtResource( 3 )
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource( 8 )
+
+[node name="PlayerTurn" type="Node" parent="StateMachine"]
+script = ExtResource( 5 )
+
+[node name="EnemyTurn" type="Node" parent="StateMachine"]
+script = ExtResource( 9 )
 
 [node name="BGLayer" type="CanvasLayer" parent="."]
 layer = -1

@@ -1,32 +1,39 @@
+using System.Collections.Generic;
 using Godot;
 using GoRogue;
 using GoRogue.GameFramework;
 using GoRogue.MapGeneration;
 using GoRogue.MapViews;
+using Microsoft.Xna.Framework;
 using SlashRoguelikedevTutorial2020.Characters;
 using SlashRoguelikedevTutorial2020.Scripts;
+using Vector2 = Godot.Vector2;
 
 public class DungeonMap : TileMap
 {
+    public Vector2 this[int x, int y] => MapToWorld(new Vector2(x, y));
+    public Vector2 this[Coord c] => this[c.X, c.Y];
+    public Vector2 this[Vector2 v] => this[(int)v.x, (int)v.y];
+    
     public Map Map
     {
         get;
         private set;
     }
+    
     private TileMap _fog;
     private int _numMonsters = 20;
 
+    public List<Monster> Monsters { get; private set; }
+    
     public IReadOnlyFOV FOV => Map.FOV;
 
     public override void _Ready()
     {
         _fog = GetNode<TileMap>("Fog");
+        Monsters = new List<Monster>();
     }
-
-    public Vector2 this[int x, int y] => MapToWorld(new Vector2(x, y));
-    public Vector2 this[Coord c] => this[c.X, c.Y];
-    public Vector2 this[Vector2 v] => this[(int)v.x, (int)v.y];
-
+    
     public void GenerateMap()
     {
         var tempMap = new ArrayMap<bool>(50, 50);
@@ -55,10 +62,11 @@ public class DungeonMap : TileMap
         // generate monsters
         for (var i = 0; i < _numMonsters; ++i)
         {
-            var skeleman = GD.Load<PackedScene>("res://Characters/Monsters/Skeleman.tscn").Instance() as Character;
+            var skeleman = GD.Load<PackedScene>("res://Characters/Monsters/Skeleman.tscn").Instance() as Monster;
             GetTree().Root.GetNode("Game").AddChild(skeleman);
             skeleman.Position = Map.WalkabilityView.RandomPosition(true);
             AddCharacter(skeleman);
+            Monsters.Add(skeleman);
         }
         
         Map.CalculateFOV(playerInstance.Position, playerInstance.FOVRadius, Radius.DIAMOND);

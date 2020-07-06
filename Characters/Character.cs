@@ -11,8 +11,9 @@ public class Character : Node2D, IGameObject
     public Tween Tween;
     public Label HitText;
     private float _tweenLength = 0.1f;
-
+    
     public int FOVRadius = 3;
+    
     public AudioStreamPlayer Audio => GameController.Audio;
     [Export] private AudioStream[] _movementSounds;
     [Export] private AudioStream _hitSound;
@@ -44,7 +45,7 @@ public class Character : Node2D, IGameObject
         Map.RemoveCharacter(this);
         QueueFree();
     }
-
+    
     public void TakeDamage()
     {
         Anim.Stop();

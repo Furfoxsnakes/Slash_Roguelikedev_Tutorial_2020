@@ -75,10 +75,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Characters\Character.cs" />
+    <Compile Include="Characters\Monsters\Monster.cs" />
     <Compile Include="Characters\Player\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripts\Behaviours\StandardMoveAndAttack.cs" />
     <Compile Include="Scripts\BGMController.cs" />
     <Compile Include="Scripts\Command.cs" />
+    <Compile Include="Scripts\CommandManager.cs" />
     <Compile Include="Scripts\Commands\AttackCommand.cs" />
     <Compile Include="Scripts\Commands\BumpCommand.cs" />
     <Compile Include="Scripts\Commands\MoveCommand.cs" />
@@ -87,7 +90,15 @@
     <Compile Include="Scripts\FloorTerrain.cs" />
     <Compile Include="Scripts\GameController.cs" />
     <Compile Include="Scripts\Globals.cs" />
+    <Compile Include="Scripts\InputAction.cs" />
+    <Compile Include="Scripts\InputActions\BasicMoveAndAttackAction.cs" />
     <Compile Include="Scripts\InputManager.cs" />
+    <Compile Include="Scripts\Interfaces\IBehaviour.cs" />
+    <Compile Include="Scripts\State.cs" />
+    <Compile Include="Scripts\StateMachine.cs" />
+    <Compile Include="Scripts\States\EnemyTurnState.cs" />
+    <Compile Include="Scripts\States\GameState.cs" />
+    <Compile Include="Scripts\States\PlayerTurnState.cs" />
     <Compile Include="Scripts\Terrain.cs" />
     <Compile Include="Scripts\WallTerrain.cs" />
   </ItemGroup>
