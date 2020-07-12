@@ -1,4 +1,5 @@
-﻿using GoRogue;
+﻿using System.Threading.Tasks;
+using GoRogue;
 using GoRogue.GameFramework;
 
 namespace SlashRoguelikedevTutorial2020.Scripts
@@ -13,9 +14,9 @@ namespace SlashRoguelikedevTutorial2020.Scripts
             Character = character;
         }
 
-        public virtual void Run(Direction dir)
+        public virtual bool Run(Direction dir)
         {
-            
+            return true;
         }
     }
 }

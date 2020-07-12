@@ -30,6 +30,14 @@ animations = [ {
 
 [node name="Skeleman" instance=ExtResource( 1 )]
 script = ExtResource( 3 )
+Level = 1
+Experience = 10
+MaxHealth = 5
+Attack = 1
+AttackRating = 60
+Defense = 1
+DefenseRating = 40
+Gold = 10
 
 [node name="AnimatedSprite" parent="." index="0"]
 frames = SubResource( 5 )

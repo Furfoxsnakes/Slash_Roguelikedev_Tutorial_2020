@@ -3,7 +3,7 @@ using GoRogue;
 
 namespace SlashRoguelikedevTutorial2020.Scripts.Commands
 {
-    public class BumpCommand : Command
+    public class BumpCommand : CommandBase
     {
         protected Character Character;
         protected Vector2 ToVector;
@@ -20,13 +20,15 @@ namespace SlashRoguelikedevTutorial2020.Scripts.Commands
             ToVector = new Vector2(c.X, c.Y);
         }
 
-        public override bool Execute()
+        public override void Execute()
         {
+            Finish(CommandResult.Failure);
+            
             var startingPos = Character.GlobalPosition;
             Character.Tween.InterpolateProperty(Character, "global_position", startingPos, ToVector, 0.1f);
             Character.Tween.InterpolateProperty(Character, "global_position", ToVector, startingPos, 0.1f);
             Character.Tween.Start();
-            return true;
+            //return true;
         }
     }
 }

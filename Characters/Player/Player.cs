@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Godot;
 using GoRogue;
 using SlashRoguelikedevTutorial2020.Scripts;
-using SlashRoguelikedevTutorial2020.Scripts.InputActions;
 
 namespace SlashRoguelikedevTutorial2020.Characters
 {
@@ -29,7 +28,6 @@ namespace SlashRoguelikedevTutorial2020.Characters
             base._Ready();
             Camera = GetNode<Camera2D>("Camera");
             SetProcessInput(false);
-            InputAction = new BasicMoveAndAttackAction(this);
         }
     }
 }

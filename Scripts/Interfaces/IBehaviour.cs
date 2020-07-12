@@ -2,6 +2,6 @@
 {
     public interface IBehaviour
     {
-        void Act(Character character);
+        void Act(Monster monster);
     }
 }

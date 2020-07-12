@@ -10,6 +10,8 @@ namespace SlashRoguelikedevTutorial2020.Scripts
         [Signal]
         public delegate void StateFinished();
 
+        public event StateFinished OnStateFinished;
+
         public override void _Ready()
         {
             Parent = GetParent<StateMachine>();

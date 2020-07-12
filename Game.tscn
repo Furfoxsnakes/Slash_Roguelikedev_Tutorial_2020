@@ -70,7 +70,7 @@ format = 1
 [node name="BGM" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 6 )
 script = ExtResource( 7 )
-MaxVolume = -20.0
+MaxVolume = -10.0
 
 [node name="DelayTimer" type="Timer" parent="BGM"]
 

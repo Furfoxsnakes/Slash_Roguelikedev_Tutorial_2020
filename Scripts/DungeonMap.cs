@@ -81,12 +81,12 @@ public class DungeonMap : TileMap
 
     private void OnObjectMoved(object sender, ItemMovedEventArgs<IGameObject> e)
     {
-        if (!(e.Item is Character character)) return;
-        
-        var fromPos = MapToWorld(new Vector2(e.OldPosition.X, e.OldPosition.Y));
-        var toPos = MapToWorld(new Vector2(e.NewPosition.X, e.NewPosition.Y));
-        character.TweenToPosition(fromPos, toPos);
-        character.PlayMovementSound();
+        // if (!(e.Item is Character character)) return;
+        //
+        // var fromPos = MapToWorld(new Vector2(e.OldPosition.X, e.OldPosition.Y));
+        // var toPos = MapToWorld(new Vector2(e.NewPosition.X, e.NewPosition.Y));
+        // character.TweenToPosition(fromPos, toPos);
+        // character.PlayMovementSound();
     }
 
     public void Draw()

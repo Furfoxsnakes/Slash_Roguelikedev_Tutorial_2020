@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using GoRogue;
+using GoRogue.DiceNotation;
 using GoRogue.GameFramework;
 
 public class Character : Node2D, IGameObject
@@ -10,16 +11,24 @@ public class Character : Node2D, IGameObject
     public AnimationPlayer Anim;
     public Tween Tween;
     public Label HitText;
-    private float _tweenLength = 0.1f;
+    private float _tweenLength = 0.2f;
     
     [Export] public int FOVRadius = 3;
-    
+    [Export] public int Level;
+    [Export] public int Experience;
+    [Export] public int MaxHealth;
+    public int Health;
+    [Export] public int Attack;
+    [Export] public int AttackRating;
+    [Export] public int Defense;
+    [Export] public int DefenseRating;
+    [Export] public int Gold;
+
     public AudioStreamPlayer Audio => GameController.Audio;
     [Export] private AudioStream[] _movementSounds;
     [Export] private AudioStream _hitSound;
 
     protected DungeonMap Map => GameController.DungeonMap;
-    // protected DungeonMap Map => GameController.Instance.DungeonMap;
     private IGameObject _gameObjectImplementation;
 
     public override void _Ready()
@@ -29,6 +38,7 @@ public class Character : Node2D, IGameObject
         Anim = GetNode<AnimationPlayer>("Anim");
         HitText = GetNode<Label>("HitText");
         Tween = GetNode<Tween>("Tween");
+        Health = MaxHealth;
     }
 
     public void PlayMovementSound()
@@ -45,11 +55,54 @@ public class Character : Node2D, IGameObject
         Map.RemoveCharacter(this);
         QueueFree();
     }
-    
-    public void TakeDamage()
+
+    public void AttackCharacter(Character target)
     {
+        var numHits = ResolveAttacks();
+        var resolvedHits = ResolveDefense(numHits);
+        target.TakeDamage(resolvedHits);
+    }
+
+    public int ResolveAttacks()
+    {
+        var hits = 0;
+        for (var i = 0; i < Attack; ++i)
+        {
+            var roll = Dice.Roll("1d100");
+            if (roll <= AttackRating)
+                hits++;
+        }
+
+        return hits;
+    }
+
+    public int ResolveDefense(int numAttacks)
+    {
+        if (numAttacks == 0) return 0;
+        var hits = numAttacks;
+
+        for (var i = 0; i < Defense; ++i)
+        {
+            var roll = Dice.Roll("1d100");
+            if (roll <= DefenseRating)
+            {
+                hits = Mathf.Max(0, hits - 1);
+            }
+        }
+
+        return hits;
+    }
+    
+    public void TakeDamage(int damage)
+    {
+        HitText.Text = damage == 0 ? "MISS!" : $"{damage} DAMAGE!";
         Anim.Stop();
         Anim.Play("Hit");
+
+        Health -= damage;
+        if (Health <= 0)
+            // TODO: Game still trying to access after it's been disposed
+            Kill();
 
         if (_hitSound == null) return;
         
@@ -59,9 +112,9 @@ public class Character : Node2D, IGameObject
         audio.Play();
     }
 
-    public void TweenToPosition(Vector2 from, Vector2 to)
+    public void TweenToPosition(Vector2 from, Vector2 to, float duration = 1f)
     {
-        Tween.InterpolateProperty(this, "global_position", from, to, _tweenLength);
+        Tween.InterpolateProperty(this, "global_position", from, to, duration);
         Tween.Start();
     }
 

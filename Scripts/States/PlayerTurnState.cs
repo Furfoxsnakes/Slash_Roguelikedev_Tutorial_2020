@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Godot;
 using GoRogue;
+using SlashRoguelikedevTutorial2020.Scripts.Commands;
 
 namespace SlashRoguelikedevTutorial2020.Scripts.States
 {
@@ -26,15 +29,17 @@ namespace SlashRoguelikedevTutorial2020.Scripts.States
 
                 if (moveDir == Direction.NONE) return;
 
-                Player.InputAction.Run(moveDir);
-                
-                GameController.CommandManager.Run();
+                var moveCommand = new MoveCommand(Player, moveDir);
+                moveCommand.OnSuccessMethod = OnMoveSuccess;
+
+                GameController.CommandManager.PushAndRun(moveCommand);
             }
         }
 
-        protected override void OnCommandManagerFinished()
+        private bool OnMoveSuccess(CommandBase arg)
         {
             GameController.StateMachine.ChangeState("EnemyTurn");
+            return true;
         }
     }
 }

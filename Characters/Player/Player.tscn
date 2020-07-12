@@ -36,6 +36,12 @@ animations = [ {
 [node name="Player" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
 FOVRadius = 5
+Level = 1
+MaxHealth = 10
+Attack = 2
+AttackRating = 95
+Defense = 2
+DefenseRating = 60
 _movementSounds = [ ExtResource( 4 ), ExtResource( 5 ), ExtResource( 7 ), ExtResource( 6 ) ]
 _hitSound = ExtResource( 8 )
 
